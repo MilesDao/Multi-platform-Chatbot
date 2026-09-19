@@ -92,3 +92,18 @@ def member_token(client, member_user) -> str:
     )
     assert response.status_code == 200, response.text
     return response.json()["access_token"]
+
+
+@pytest.fixture
+def page_id(client, admin_token, auth) -> int:
+    response = client.post(
+        "/api/pages",
+        headers=auth(admin_token),
+        json={
+            "fb_page_id": "100000000000001",
+            "name": "Hateco Test Page",
+            "access_token": "EAAG-fixture-token",
+        },
+    )
+    assert response.status_code == 201, response.text
+    return response.json()["id"]
