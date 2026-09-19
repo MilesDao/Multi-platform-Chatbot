@@ -9,8 +9,10 @@ from app.routers import (
     auth,
     conversations,
     knowledge,
+    learning,
     members,
     pages,
+    testchat,
     users,
     webhook,
 )
@@ -42,6 +44,8 @@ def create_app() -> FastAPI:
     application.include_router(members.router)
     application.include_router(knowledge.router)
     application.include_router(conversations.router)
+    application.include_router(learning.router)
+    application.include_router(testchat.router)
     application.include_router(webhook.router)
 
     return application
