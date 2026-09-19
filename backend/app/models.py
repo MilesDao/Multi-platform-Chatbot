@@ -48,6 +48,7 @@ class Page(Base):
     name: Mapped[str] = mapped_column(String(255))
     access_token_encrypted: Mapped[str] = mapped_column(Text, default="")
     system_prompt: Mapped[str] = mapped_column(Text, default="")
+    closing_message: Mapped[str] = mapped_column(Text, default="")
     llm_model: Mapped[str] = mapped_column(String(128), default="")
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
@@ -62,9 +63,6 @@ class Page(Base):
         back_populates="page", cascade="all, delete-orphan"
     )
     suggestions: Mapped[list["Suggestion"]] = relationship(
-        back_populates="page", cascade="all, delete-orphan"
-    )
-    leads: Mapped[list["Lead"]] = relationship(
         back_populates="page", cascade="all, delete-orphan"
     )
 
@@ -157,27 +155,3 @@ class Suggestion(Base):
     )
 
     page: Mapped["Page"] = relationship(back_populates="suggestions")
-
-
-class Lead(Base):
-    __tablename__ = "leads"
-    __table_args__ = (UniqueConstraint("page_id", "psid", name="uq_lead_page_psid"),)
-
-    id: Mapped[int] = mapped_column(Integer, primary_key=True)
-    page_id: Mapped[int] = mapped_column(
-        ForeignKey("pages.id", ondelete="CASCADE"), index=True
-    )
-    psid: Mapped[str] = mapped_column(String(64), index=True)
-    cccd_image: Mapped[bool] = mapped_column(Boolean, default=False)
-    hocba_image: Mapped[bool] = mapped_column(Boolean, default=False)
-    phone_number: Mapped[str] = mapped_column(String(32), default="")
-    major: Mapped[str] = mapped_column(String(255), default="")
-    address: Mapped[str] = mapped_column(Text, default="")
-    is_complete: Mapped[bool] = mapped_column(Boolean, default=False)
-    completion_notified: Mapped[bool] = mapped_column(Boolean, default=False)
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=utcnow)
-    updated_at: Mapped[datetime] = mapped_column(
-        DateTime, default=utcnow, onupdate=utcnow
-    )
-
-    page: Mapped["Page"] = relationship(back_populates="leads")
