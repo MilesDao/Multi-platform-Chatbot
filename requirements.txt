@@ -3,6 +3,7 @@ uvicorn[standard]
 requests
 pydantic
 pydantic-settings
+email-validator
 sqlalchemy>=2.0
 PyJWT
 bcrypt
