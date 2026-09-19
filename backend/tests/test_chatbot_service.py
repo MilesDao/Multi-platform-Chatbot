@@ -101,3 +101,30 @@ def test_page_model_override_is_passed_to_the_llm_factory(db, monkeypatch):
     chatbot.generate_answer(db, page, "Xin chào")
 
     assert captured["model"] == "anthropic/claude-sonnet-5"
+
+
+def test_closing_message_is_appended_after_the_answer(db, stub_llm):
+    page = make_page(db, closing_message="Gọi hotline 0123 456 789 để được tư vấn thêm nhé!")
+
+    answer, _context = chatbot.generate_answer(db, page, "Học phí bao nhiêu?")
+
+    assert answer == (
+        "Chào em, trường trả lời như sau.\n\n"
+        "Gọi hotline 0123 456 789 để được tư vấn thêm nhé!"
+    )
+
+
+def test_blank_closing_message_appends_nothing(db, stub_llm):
+    page = make_page(db, closing_message="   ")
+
+    answer, _context = chatbot.generate_answer(db, page, "Học phí bao nhiêu?")
+
+    assert answer == "Chào em, trường trả lời như sau."
+
+
+def test_empty_closing_message_appends_nothing(db, stub_llm):
+    page = make_page(db)
+
+    answer, _context = chatbot.generate_answer(db, page, "Học phí bao nhiêu?")
+
+    assert answer == "Chào em, trường trả lời như sau."

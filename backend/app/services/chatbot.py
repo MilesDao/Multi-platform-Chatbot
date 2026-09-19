@@ -53,4 +53,10 @@ def generate_answer(db: Session, page: Page, question: str) -> tuple[str, list[s
     prompt = build_prompt(page, context_chunks, question)
     llm = build_llm(page.llm_model or "")
     response = llm.invoke(prompt)
-    return str(response.content), context_chunks
+    answer = str(response.content)
+
+    closing_message = (page.closing_message or "").strip()
+    if closing_message:
+        answer = f"{answer}\n\n{closing_message}"
+
+    return answer, context_chunks
