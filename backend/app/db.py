@@ -26,4 +26,6 @@ def get_db() -> Generator[Session, None, None]:
 
 
 def init_db() -> None:
+    from app import models  # noqa: F401  (registers the mappers)
+
     Base.metadata.create_all(bind=engine)
